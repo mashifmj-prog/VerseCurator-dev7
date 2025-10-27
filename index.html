@@ -7,11 +7,108 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* [KEEP ALL EXISTING CSS - it's good!] */
-        /* We'll just add the missing modal styles back */
-        
-        /* Rating Modal Styles */
-        .rating-modal {
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Light Theme Variables */
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --text-primary: #2c3e50;
+            --text-secondary: #7f8c8d;
+            --text-light: #95a5a6;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #ecf0f1;
+            --card-bg: #ffffff;
+            --border-color: #e9ecef;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.15);
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .dark-mode {
+            --primary-color: #8b9dc3;
+            --secondary-color: #3b5998;
+            --accent-color: #dfe3ee;
+            --text-primary: #ecf0f1;
+            --text-secondary: #bdc3c7;
+            --text-light: #95a5a6;
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-tertiary: #0f3460;
+            --card-bg: #1e2a47;
+            --border-color: #2c3e50;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.4);
+            --gradient: linear-gradient(135deg, #8b9dc3 0%, #3b5998 100%);
+        }
+
+        /* Special Occasion Themes */
+        .christmas-theme {
+            --primary-color: #c41e3a;
+            --secondary-color: #155d27;
+            --gradient: linear-gradient(135deg, #c41e3a 0%, #155d27 100%);
+        }
+
+        .easter-theme {
+            --primary-color: #ff6bcb;
+            --secondary-color: #7bed9f;
+            --gradient: linear-gradient(135deg, #ff6bcb 0%, #7bed9f 100%);
+        }
+
+        .thanksgiving-theme {
+            --primary-color: #d35400;
+            --secondary-color: #f39c12;
+            --gradient: linear-gradient(135deg, #d35400 0%, #f39c12 100%);
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            background: var(--bg-primary);
+            padding-bottom: 2rem;
+        }
+
+        /* Rate Button Styles */
+        .rate-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow-hover);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .rate-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Modal Styles */
+        .modal {
             display: none;
             position: fixed;
             top: 0;
@@ -21,15 +118,13 @@
             background: rgba(0, 0, 0, 0.7);
             z-index: 2000;
             backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
         }
 
-        .rating-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        .modal-content {
             background: var(--card-bg);
-            padding: 30px;
+            padding: 2rem;
             border-radius: 15px;
             box-shadow: var(--shadow-hover);
             max-width: 400px;
@@ -57,30 +152,17 @@
             transform: scale(1.2);
         }
 
-        .share-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
+        .rating-comment {
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 2000;
-            backdrop-filter: blur(5px);
-        }
-
-        .share-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: var(--shadow-hover);
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
+            height: 80px;
+            margin: 15px 0;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            resize: none;
+            font-family: inherit;
         }
 
         .share-options {
@@ -111,27 +193,1240 @@
             display: block;
         }
 
-        .share-option.whatsapp {
-            color: #25D366;
+        .share-option.whatsapp { color: #25D366; }
+        .share-option.sms { color: #34B7F1; }
+        .share-option.email { color: #EA4335; }
+        .share-option.copy { color: var(--primary-color); }
+
+        /* Enhanced Header Styles */
+        .app-header {
+            background: var(--gradient);
+            color: white;
+            padding: 1rem;
+            position: relative;
+            overflow: hidden;
         }
 
-        .share-option.sms {
-            color: #34B7F1;
+        .header-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
         }
 
-        .share-option.email {
-            color: #EA4335;
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
         }
 
-        .share-option.copy {
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            flex-shrink: 0;
+        }
+
+        .logo i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .title-group h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            line-height: 1.2;
+        }
+
+        .title-group .app-tagline {
+            font-size: 0.75rem;
+            opacity: 0.9;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            flex-shrink: 0;
+        }
+
+        .theme-toggle .fa-sun {
+            display: none;
+        }
+
+        .dark-mode .theme-toggle .fa-moon {
+            display: none;
+        }
+
+        .dark-mode .theme-toggle .fa-sun {
+            display: block;
+        }
+
+        .theme-toggle i {
+            font-size: 1.1rem;
+            color: white;
+        }
+
+        /* Enhanced Time Greeting */
+        .time-greeting {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            margin: 0.5rem 0;
+            text-align: center;
+        }
+
+        /* Mode Indicator */
+        .mode-indicator {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 0.5rem auto;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .mode-indicator.auto {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .mode-indicator.manual {
+            background: rgba(255, 215, 0, 0.3);
+            color: #ffd700;
+        }
+
+        .countdown {
+            font-size: 0.7rem;
+            opacity: 0.8;
+            margin-left: 0.5rem;
+        }
+
+        /* Horizontal Scroll Time Periods */
+        .time-period-indicator {
+            position: relative;
+            z-index: 2;
+            margin: 1rem 0 0;
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .time-period-indicator::-webkit-scrollbar {
+            display: none;
+        }
+
+        .period {
+            flex: 0 0 auto;
+            text-align: center;
+            padding: 0.75rem 0.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.7;
+            min-width: 80px;
+        }
+
+        .period.active {
+            background: rgba(255, 255, 255, 0.2);
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .period i {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+
+        .period span {
+            display: block;
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-bottom: 0.125rem;
+        }
+
+        .period small {
+            font-size: 0.65rem;
+            opacity: 0.8;
+        }
+
+        /* Main Content - Mobile Optimized */
+        .app-main {
+            padding: 1rem;
+        }
+
+        /* Control Panel - Mobile Stack */
+        .control-panel {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .panel-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .control-label i {
             color: var(--primary-color);
+            width: 20px;
+            font-size: 0.9rem;
+        }
+
+        .control-select {
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        /* Verse Section - Mobile Optimized */
+        .verse-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .verse-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .verse-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .verse-header {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .verse-time-badge,
+        .verse-translation-badge {
+            padding: 0.5rem 0.875rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: var(--gradient);
+            color: white;
+        }
+
+        .verse-translation-badge {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .verse-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            font-weight: 500;
+        }
+
+        .verse-reference {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .verse-actions {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .action-btn {
+            background: var(--bg-tertiary);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+        }
+
+        /* Action Buttons - Mobile Full Width */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .action-buttons-row {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .action-buttons-row .btn {
+            flex: 1;
+        }
+
+        .btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        /* Stats Section - Mobile Grid */
+        .stats-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem 1rem;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.75rem;
+        }
+
+        .stat-icon i {
+            font-size: 1.25rem;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        /* Enhanced Reminder Management */
+        .reminder-management {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .reminder-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .reminder-tab {
+            padding: 0.75rem 1rem;
+            border: none;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .reminder-tab.active {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .reminder-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .reminder-item {
+            background: var(--bg-secondary);
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--primary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .reminder-content {
+            flex: 1;
+        }
+
+        .reminder-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .reminder-details {
+            display: flex;
+            gap: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .reminder-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .reminder-action-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .reminder-action-btn:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .reminder-action-btn.delete {
+            color: #e74c3c;
+        }
+
+        .reminder-tab-content {
+            display: none;
+        }
+
+        .reminder-tab-content.active {
+            display: block;
+        }
+
+        /* WhatsApp Broadcast Assistant */
+        .collapsible-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .collapsible-btn {
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.25rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .collapsible-btn:hover {
+            background: var(--bg-secondary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .collapsible-btn i:last-child {
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible-content {
+            display: none;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 14px 14px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        /* Broadcast Tabs */
+        .broadcast-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .broadcast-tab {
+            padding: 0.75rem 1rem;
+            border: none;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .broadcast-tab.active {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Broadcast Steps */
+        .broadcast-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .broadcast-step {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            background: var(--gradient);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .step-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .copy-box {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            position: relative;
+            font-style: italic;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Enhanced contact management */
+        .contact-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .contact-item {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .contact-info {
+            flex: 1;
+        }
+
+        .contact-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .contact-number {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .contact-groups {
+            display: flex;
+            gap: 0.25rem;
+            margin-top: 0.25rem;
+        }
+
+        .contact-group-tag {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.125rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+        }
+
+        .contact-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Enhanced theme toggle */
+        .theme-toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .theme-indicator {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Enhanced platform warnings */
+        .platform-warning-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Enhanced link display */
+        .app-link-display {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .app-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .app-link:hover::after {
+            content: 'https://mashifmj-prog.github.io/VerseCurator-dev7/';
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2c3e50;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        /* Share History Styles */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .history-content {
+            flex: 1;
+        }
+
+        .history-verse {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .history-details {
+            display: flex;
+            gap: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .history-platform {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--gradient);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            z-index: 10000;
+            box-shadow: var(--shadow-hover);
+            font-weight: 600;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
     </style>
 </head>
 <body class="light-mode">
     <div class="app-container">
-        <!-- [KEEP ALL EXISTING HTML STRUCTURE] -->
-        <!-- Header, main content, etc. remain the same -->
+        <!-- Enhanced Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">
+                        <i class="fas fa-scroll"></i>
+                    </div>
+                    <div class="title-group">
+                        <h1 class="app-title">VerseCurator</h1>
+                        <p class="app-tagline">Curate • Share • Inspire</p>
+                    </div>
+                </div>
+                
+                <div class="header-controls">
+                    <div class="theme-toggle-container">
+                        <span class="theme-indicator" id="themeIndicator">Auto - ☀️ Day</span>
+                        <button class="theme-toggle" id="themeToggle">
+                            <i class="fas fa-moon"></i>
+                            <i class="fas fa-sun"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Enhanced Time Greeting -->
+            <div class="time-greeting" id="timeGreeting">Good Morning</div>
+            
+            <!-- Mode Indicator with Countdown -->
+            <div class="mode-indicator auto" id="modeIndicator">
+                <span id="modeText">Auto Mode</span>
+                <span class="countdown" id="countdown"></span>
+            </div>
+            
+            <!-- Horizontal Scroll Time Periods -->
+            <div class="time-period-indicator">
+                <div class="period active" data-period="morning">
+                    <i class="fas fa-sunrise"></i>
+                    <span>Morning</span>
+                    <small>5AM-12PM</small>
+                </div>
+                <div class="period" data-period="day">
+                    <i class="fas fa-sun"></i>
+                    <span>Day</span>
+                    <small>12PM-3PM</small>
+                </div>
+                <div class="period" data-period="afternoon">
+                    <i class="fas fa-cloud-sun"></i>
+                    <span>Afternoon</span>
+                    <small>3PM-6PM</small>
+                </div>
+                <div class="period" data-period="evening">
+                    <i class="fas fa-sunset"></i>
+                    <span>Evening</span>
+                    <small>6PM-10PM</small>
+                </div>
+                <div class="period" data-period="night">
+                    <i class="fas fa-moon"></i>
+                    <span>Night</span>
+                    <small>10PM-5AM</small>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main App Content -->
+        <main class="app-main">
+            <!-- Control Panel -->
+            <section class="control-panel">
+                <div class="panel-grid">
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-bible"></i>
+                            Translation
+                        </label>
+                        <select class="control-select" id="translationSelect">
+                            <option value="ESV">ESV</option>
+                            <option value="NIV">NIV</option>
+                            <option value="KJV">KJV</option>
+                            <option value="NKJV">NKJV</option>
+                            <option value="NLT">NLT</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-clock"></i>
+                            Display Mode
+                        </label>
+                        <select class="control-select" id="displayModeSelect">
+                            <option value="auto">Auto (Time-based)</option>
+                            <option value="morning">Morning</option>
+                            <option value="day">Day</option>
+                            <option value="afternoon">Afternoon</option>
+                            <option value="evening">Evening</option>
+                            <option value="night">Night</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-calendar-alt"></i>
+                            Occasion Mode
+                        </label>
+                        <select class="control-select" id="occasionSelect">
+                            <option value="auto">Auto Detect</option>
+                            <option value="general">General</option>
+                            <option value="christmas">Christmas</option>
+                            <option value="easter">Easter</option>
+                            <option value="thanksgiving">Thanksgiving</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Verse Display Section -->
+            <section class="verse-section">
+                <div class="verse-card" id="verseCard">
+                    <div class="verse-content">
+                        <div class="verse-header">
+                            <span class="verse-time-badge" id="verseTimeBadge">🌅 Morning</span>
+                            <span class="verse-translation-badge" id="verseTranslationBadge">ESV</span>
+                            <span class="verse-translation-badge" id="verseOccasionBadge" style="display: none;">🎄 Christmas</span>
+                        </div>
+                        <p class="verse-text" id="verseText">
+                            "The steadfast love of the LORD never ceases; his mercies never come to an end; they are new every morning; great is your faithfulness."
+                        </p>
+                        <p class="verse-reference" id="verseReference">Lamentations 3:22-23</p>
+                        <div class="verse-actions">
+                            <button class="action-btn favorite-btn" id="favoriteVerse">
+                                <i class="far fa-heart"></i>
+                            </button>
+                            <button class="action-btn note-btn" id="addNote">
+                                <i class="far fa-sticky-note"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <div class="action-buttons-row">
+                        <button class="btn btn-secondary" id="previousVerse">
+                            <i class="fas fa-arrow-left"></i>
+                            Previous Verse
+                        </button>
+                        <button class="btn btn-primary" id="nextVerse">
+                            <i class="fas fa-arrow-right"></i>
+                            Next Verse
+                        </button>
+                    </div>
+                    <div class="action-buttons-row">
+                        <button class="btn btn-secondary" id="shareButton">
+                            <i class="fas fa-share-alt"></i>
+                            Share
+                        </button>
+                        <button class="btn btn-outline" id="scheduleButton">
+                            <i class="fas fa-clock"></i>
+                            Set Reminder
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Enhanced Reminder Management Section -->
+            <section class="reminder-management">
+                <h3><i class="fas fa-bell"></i> Reminder Management</h3>
+                
+                <div class="reminder-tabs">
+                    <button class="reminder-tab active" data-tab="active">Active Reminders</button>
+                    <button class="reminder-tab" data-tab="history">Reminder History</button>
+                    <button class="reminder-tab" data-tab="stats">Statistics</button>
+                </div>
+
+                <div class="reminder-content">
+                    <!-- Active Reminders Tab -->
+                    <div class="reminder-tab-content active" id="activeRemindersTab">
+                        <div class="reminder-list" id="activeRemindersList">
+                            <!-- Active reminders will be populated here -->
+                        </div>
+                        <button class="btn btn-primary" id="addReminderBtn" style="width: 100%; margin-top: 1rem;">
+                            <i class="fas fa-plus"></i> Add New Reminder
+                        </button>
+                    </div>
+
+                    <!-- Reminder History Tab -->
+                    <div class="reminder-tab-content" id="reminderHistoryTab">
+                        <div class="reminder-list" id="reminderHistoryList">
+                            <!-- Reminder history will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Statistics Tab -->
+                    <div class="reminder-tab-content" id="reminderStatsTab">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-bell"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-number" id="totalReminders">0</div>
+                                    <div class="stat-label">Total Reminders</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-number" id="activeRemindersCount">0</div>
+                                    <div class="stat-label">Active</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-history"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-number" id="completedRemindersCount">0</div>
+                                    <div class="stat-label">Completed</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Stats -->
+            <section class="stats-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="versesViewed">0</div>
+                            <div class="stat-label">Viewed</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-share"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="versesShared">0</div>
+                            <div class="stat-label">Shared</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="versesFavorited">0</div>
+                            <div class="stat-label">Favorites</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="currentStreak">0</div>
+                            <div class="stat-label">Day Streak</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- WhatsApp Broadcast Assistant -->
+            <section class="collapsible-section">
+                <button class="collapsible-btn" id="toggleBroadcast">
+                    <span>
+                        <i class="fab fa-whatsapp"></i>
+                        WhatsApp Broadcast Assistant
+                    </span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="collapsible-content" id="broadcastContent">
+                    <div class="broadcast-tabs">
+                        <button class="broadcast-tab active" data-tab="guide">Broadcast Guide</button>
+                        <button class="broadcast-tab" data-tab="contacts">Contact Management</button>
+                    </div>
+                    
+                    <div class="tab-content active" id="guideTab">
+                        <div class="broadcast-steps">
+                            <div class="broadcast-step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Prepare Your Verse</div>
+                                    <div class="step-description">
+                                        Copy the verse text with reference. Recipients will receive clean text with attribution.
+                                    </div>
+                                    <div class="copy-box" id="verseCopyBox">
+                                        "The steadfast love of the LORD never ceases; his mercies never come to an end; they are new every morning; great is your faithfulness." - Lamentations 3:22-23
+                                        <button class="copy-btn" id="copyVerseForBroadcast">Copy</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="broadcast-step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Open WhatsApp Broadcast</div>
+                                    <div class="step-description">
+                                        In WhatsApp, tap the three dots (⋮) → New broadcast
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="broadcast-step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Select Recipients</div>
+                                    <div class="step-description">
+                                        Choose up to 256 contacts from your phone's contact list
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="broadcast-step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Paste and Send</div>
+                                    <div class="step-description">
+                                        Paste the verse and add a personal message if desired. Send to all recipients at once.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="contactsTab">
+                        <h4>Contact Management</h4>
+                        <div class="contact-list" id="contactsList">
+                            <!-- Contacts will be populated here -->
+                        </div>
+                        <div class="btn-group" style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <button class="btn btn-secondary" id="addContactBtn">
+                                <i class="fas fa-plus"></i> Add Contact
+                            </button>
+                            <button class="btn btn-outline" id="importContactsBtn">
+                                <i class="fas fa-file-import"></i> Import Sample
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Share History Section -->
+            <section class="collapsible-section">
+                <button class="collapsible-btn" id="toggleHistory">
+                    <span>
+                        <i class="fas fa-history"></i>
+                        Share History
+                    </span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="collapsible-content" id="historyContent">
+                    <div class="history-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>Recent Shares</h3>
+                        <button class="btn btn-outline" id="clearHistoryBtn">
+                            <i class="fas fa-trash"></i>
+                            Clear All
+                        </button>
+                    </div>
+                    <div class="history-list" id="historyList">
+                        <!-- History items will be populated here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Enhanced App Link Display -->
+            <div class="app-link-display">
+                <span class="app-link">VerseCurator App</span>
+                <small style="display: block; margin-top: 0.5rem; color: var(--text-secondary);">Hover to see URL</small>
+            </div>
+        </main>
     </div>
 
     <!-- Rate Button -->
@@ -140,8 +1435,8 @@
     </button>
 
     <!-- Rating Modal -->
-    <div class="rating-modal" id="ratingModal">
-        <div class="rating-content">
+    <div class="modal" id="ratingModal">
+        <div class="modal-content">
             <h3>Rate VerseCurator</h3>
             <p>How would you rate your experience?</p>
             <div class="rating-stars">
@@ -152,16 +1447,16 @@
                 <span class="rating-star" data-rating="5">★</span>
             </div>
             <textarea class="rating-comment" placeholder="Optional feedback..."></textarea>
-            <div class="rating-actions">
-                <button class="rating-btn rating-submit" id="submitRating">Submit</button>
-                <button class="rating-btn rating-cancel" id="cancelRating">Cancel</button>
+            <div style="display: flex; gap: 10px; margin-top: 1rem;">
+                <button class="btn btn-primary" id="submitRating" style="flex: 1;">Submit</button>
+                <button class="btn btn-secondary" id="cancelRating" style="flex: 1;">Cancel</button>
             </div>
         </div>
     </div>
 
     <!-- Share Modal -->
-    <div class="share-modal" id="shareModal">
-        <div class="share-content">
+    <div class="modal" id="shareModal">
+        <div class="modal-content">
             <h3>Share Verse</h3>
             <p>Choose how to share this verse</p>
             <div class="share-options">
@@ -189,7 +1484,7 @@
     </div>
 
     <script>
-        // ENHANCED VerseCurator App with ALL Missing Functionality Restored
+        // COMPLETE VerseCurator App with ALL Features
         class VerseCurator {
             constructor() {
                 this.currentVerse = null;
@@ -225,12 +1520,17 @@
                     general: {
                         ESV: [
                             { text: "The steadfast love of the LORD never ceases; his mercies never come to an end; they are new every morning; great is your faithfulness.", reference: "Lamentations 3:22-23" },
-                            { text: "This is the day that the LORD has made; let us rejoice and be glad in it.", reference: "Psalm 118:24" }
+                            { text: "This is the day that the LORD has made; let us rejoice and be glad in it.", reference: "Psalm 118:24" },
+                            { text: "Trust in the LORD with all your heart, and do not lean on your own understanding.", reference: "Proverbs 3:5" }
+                        ],
+                        NIV: [
+                            { text: "Because of the LORD's great love we are not consumed, for his compassions never fail.", reference: "Lamentations 3:22" }
                         ]
                     },
                     morning: {
                         ESV: [
-                            { text: "Let me hear in the morning of your steadfast love, for in you I trust. Make me know the way I should go, for to you I lift up my soul.", reference: "Psalm 143:8" }
+                            { text: "Let me hear in the morning of your steadfast love, for in you I trust. Make me know the way I should go, for to you I lift up my soul.", reference: "Psalm 143:8" },
+                            { text: "The LORD's lovingkindnesses indeed never cease, for His compassions never fail.", reference: "Lamentations 3:22" }
                         ]
                     },
                     day: {
@@ -255,17 +1555,20 @@
                     },
                     christmas: {
                         ESV: [
-                            { text: "For to us a child is born, to us a son is given; and the government shall be upon his shoulder, and his name shall be called Wonderful Counselor, Mighty God, Everlasting Father, Prince of Peace.", reference: "Isaiah 9:6" }
+                            { text: "For to us a child is born, to us a son is given; and the government shall be upon his shoulder, and his name shall be called Wonderful Counselor, Mighty God, Everlasting Father, Prince of Peace.", reference: "Isaiah 9:6" },
+                            { text: "And the Word became flesh and dwelt among us, and we have seen his glory, glory as of the only Son from the Father, full of grace and truth.", reference: "John 1:14" }
                         ]
                     },
                     easter: {
                         ESV: [
-                            { text: "He is not here, for he has risen, as he said. Come, see the place where he lay.", reference: "Matthew 28:6" }
+                            { text: "He is not here, for he has risen, as he said. Come, see the place where he lay.", reference: "Matthew 28:6" },
+                            { text: "For God so loved the world, that he gave his only Son, that whoever believes in him should not perish but have eternal life.", reference: "John 3:16" }
                         ]
                     },
                     thanksgiving: {
                         ESV: [
-                            { text: "Give thanks in all circumstances; for this is the will of God in Christ Jesus for you.", reference: "1 Thessalonians 5:18" }
+                            { text: "Give thanks in all circumstances; for this is the will of God in Christ Jesus for you.", reference: "1 Thessalonians 5:18" },
+                            { text: "Oh give thanks to the LORD, for he is good; for his steadfast love endures forever!", reference: "Psalm 118:1" }
                         ]
                     }
                 };
@@ -276,6 +1579,7 @@
                 this.loadPreferences();
                 this.updateTimeGreeting();
                 this.startCountdownTimer();
+                this.updateOccasionTheme();
                 this.displayRandomVerse();
                 this.updateStats();
                 this.updateReminderDisplay();
@@ -286,6 +1590,8 @@
                 setInterval(() => this.updateTimeGreeting(), 60000);
                 // Check for due reminders every minute
                 setInterval(() => this.checkDueReminders(), 60000);
+                // Update occasion theme daily
+                setInterval(() => this.updateOccasionTheme(), 3600000);
             }
 
             setupEventListeners() {
@@ -297,10 +1603,12 @@
                 document.getElementById('previousVerse').addEventListener('click', () => this.displayRandomVerse());
                 document.getElementById('shareButton').addEventListener('click', () => this.showShareModal());
                 document.getElementById('scheduleButton').addEventListener('click', () => this.showAdvancedReminderModal());
+                document.getElementById('favoriteVerse').addEventListener('click', () => this.toggleFavorite());
                 
                 // Settings changes
                 document.getElementById('translationSelect').addEventListener('change', (e) => this.savePreference('translation', e.target.value));
                 document.getElementById('displayModeSelect').addEventListener('change', (e) => this.handleDisplayModeChange(e.target.value));
+                document.getElementById('occasionSelect').addEventListener('change', (e) => this.handleOccasionChange(e.target.value));
                 
                 // Rate button
                 document.getElementById('rateButton').addEventListener('click', () => this.showRatingModal());
@@ -345,7 +1653,7 @@
                 document.getElementById('closeShareModal').addEventListener('click', () => this.hideShareModal());
             }
 
-            // 🕒 COUNTDOWN TIMER FUNCTIONALITY RESTORED
+            // 🕒 COUNTDOWN TIMER FUNCTIONALITY
             startCountdownTimer() {
                 this.updateCountdown();
                 setInterval(() => this.updateCountdown(), 1000);
@@ -358,13 +1666,20 @@
                 const nextTime = this.getNextPeriodTime(nextPeriod);
                 
                 const timeDiff = nextTime - now;
+                if (timeDiff <= 0) {
+                    this.updateCountdown();
+                    return;
+                }
+                
                 const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
                 
                 const countdownElement = document.getElementById('countdown');
-                if (countdownElement) {
-                    countdownElement.textContent = `Next: ${nextPeriod} in ${hours}h ${minutes}m ${seconds}s`;
+                if (countdownElement && this.currentMode === 'auto') {
+                    countdownElement.textContent = `Next: ${this.capitalizeFirst(nextPeriod)} in ${hours}h ${minutes}m ${seconds}s`;
+                } else if (countdownElement) {
+                    countdownElement.textContent = '';
                 }
             }
 
@@ -394,51 +1709,315 @@
                 return nextTime;
             }
 
-            // 📱 CONTACT MANAGEMENT ENHANCED
-            updateContactsDisplay() {
-                const contactsList = document.getElementById('contactsList');
-                const contacts = this.userPreferences.contacts || [];
+            // Enhanced Time-Based Greeting System
+            updateTimeGreeting() {
+                const hour = new Date().getHours();
+                let greeting = "Good Morning";
                 
-                contactsList.innerHTML = contacts.length > 0 ?
-                    contacts.map(contact => `
-                        <div class="contact-item">
-                            <div class="contact-info">
-                                <div class="contact-name">${contact.name}</div>
-                                <div class="contact-number">${contact.phone}</div>
-                                <div class="contact-groups">
-                                    ${contact.groups ? contact.groups.map(group => 
-                                        `<span class="contact-group-tag">${group}</span>`
-                                    ).join('') : ''}
+                if (hour >= 5 && hour < 12) {
+                    greeting = "Good Morning";
+                } else if (hour >= 12 && hour < 15) {
+                    greeting = "Good Day";
+                } else if (hour >= 15 && hour < 18) {
+                    greeting = "Good Afternoon";
+                } else if (hour >= 18 && hour < 22) {
+                    greeting = "Good Evening";
+                } else {
+                    greeting = "Good Night";
+                }
+                
+                document.getElementById('timeGreeting').textContent = greeting;
+                this.updateThemeIndicator();
+            }
+
+            // Enhanced Theme System
+            toggleTheme() {
+                const currentTheme = this.userPreferences.theme;
+                let newTheme;
+                
+                if (currentTheme === 'auto') {
+                    newTheme = 'light';
+                } else if (currentTheme === 'light') {
+                    newTheme = 'dark';
+                } else {
+                    newTheme = 'auto';
+                }
+                
+                this.userPreferences.theme = newTheme;
+                this.applyTheme(newTheme);
+                this.savePreferences();
+            }
+
+            applyTheme(theme) {
+                document.body.classList.remove('light-mode', 'dark-mode');
+                
+                if (theme === 'auto') {
+                    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        document.body.classList.add('dark-mode');
+                    } else {
+                        document.body.classList.add('light-mode');
+                    }
+                } else {
+                    document.body.classList.add(theme + '-mode');
+                }
+                
+                this.updateThemeIndicator();
+            }
+
+            updateThemeIndicator() {
+                const theme = this.userPreferences.theme;
+                const hour = new Date().getHours();
+                let indicatorText = '';
+                
+                if (theme === 'auto') {
+                    indicatorText = hour >= 18 || hour < 6 ? 'Auto - 🌙 Night' : 'Auto - ☀️ Day';
+                } else if (theme === 'light') {
+                    indicatorText = '☀️ Light';
+                } else {
+                    indicatorText = '🌙 Dark';
+                }
+                
+                document.getElementById('themeIndicator').textContent = indicatorText;
+            }
+
+            // 🎄 OCCASION THEMES
+            updateOccasionTheme() {
+                const occasionSelect = document.getElementById('occasionSelect');
+                if (occasionSelect.value === 'auto') {
+                    const now = new Date();
+                    const month = now.getMonth();
+                    const date = now.getDate();
+                    
+                    let occasion = 'general';
+                    
+                    // Christmas season (Dec 15 - Jan 6)
+                    if ((month === 11 && date >= 15) || (month === 0 && date <= 6)) {
+                        occasion = 'christmas';
+                    }
+                    // Easter season (April 10-20 - simplified)
+                    else if (month === 3 && date >= 10 && date <= 20) {
+                        occasion = 'easter';
+                    }
+                    // Thanksgiving (US - Nov 20-30)
+                    else if (month === 10 && date >= 20 && date <= 30) {
+                        occasion = 'thanksgiving';
+                    }
+                    
+                    if (this.userPreferences.occasions.current !== occasion) {
+                        this.userPreferences.occasions.current = occasion;
+                        this.savePreferences();
+                        this.applyOccasionTheme(occasion);
+                    }
+                }
+            }
+
+            handleOccasionChange(occasion) {
+                if (occasion === 'auto') {
+                    this.updateOccasionTheme();
+                } else {
+                    this.userPreferences.occasions.current = occasion;
+                    this.savePreferences();
+                    this.applyOccasionTheme(occasion);
+                }
+                this.displayRandomVerse();
+            }
+
+            applyOccasionTheme(occasion) {
+                document.body.classList.remove('christmas-theme', 'easter-theme', 'thanksgiving-theme');
+                
+                if (occasion !== 'general') {
+                    document.body.classList.add(`${occasion}-theme`);
+                }
+                
+                // Update occasion badge
+                const occasionBadge = document.getElementById('verseOccasionBadge');
+                const occasionIcons = {
+                    christmas: '🎄',
+                    easter: '🐣',
+                    thanksgiving: '🍂'
+                };
+                
+                if (occasion !== 'general' && occasionIcons[occasion]) {
+                    occasionBadge.textContent = `${occasionIcons[occasion]} ${this.capitalizeFirst(occasion)}`;
+                    occasionBadge.style.display = 'inline-block';
+                } else {
+                    occasionBadge.style.display = 'none';
+                }
+            }
+
+            // VERSE MANAGEMENT
+            displayRandomVerse() {
+                const timePeriod = this.currentMode === 'auto' ? this.getCurrentTimePeriod() : this.userPreferences.displayMode;
+                const translation = this.userPreferences.translation;
+                const occasion = this.userPreferences.occasions.current;
+                
+                // Try occasion-specific verses first, then general verses
+                let verses = this.bibleVerses[occasion]?.[translation] || 
+                            this.bibleVerses[timePeriod]?.[translation] || 
+                            this.bibleVerses.general[translation] || 
+                            this.bibleVerses.general.ESV;
+                
+                const randomIndex = Math.floor(Math.random() * verses.length);
+                this.currentVerse = verses[randomIndex];
+                
+                this.updateVerseDisplay();
+                this.incrementStat('versesViewed');
+                
+                // Update streak
+                this.updateStreak();
+            }
+
+            updateVerseDisplay() {
+                if (!this.currentVerse) return;
+                
+                document.getElementById('verseText').textContent = `"${this.currentVerse.text}"`;
+                document.getElementById('verseReference').textContent = this.currentVerse.reference;
+                document.getElementById('verseTranslationBadge').textContent = this.userPreferences.translation;
+                
+                // Update broadcast copy box
+                const copyBox = document.getElementById('verseCopyBox');
+                if (copyBox) {
+                    copyBox.innerHTML = `"${this.currentVerse.text}" - ${this.currentVerse.reference}` +
+                        '<button class="copy-btn" id="copyVerseForBroadcast">Copy</button>';
+                    // Re-attach event listener
+                    document.getElementById('copyVerseForBroadcast').addEventListener('click', () => this.copyVerseForBroadcast());
+                }
+                
+                // Update time badge based on current period
+                const timePeriod = this.currentMode === 'auto' ? this.getCurrentTimePeriod() : this.userPreferences.displayMode;
+                const timeIcons = {
+                    morning: '🌅',
+                    day: '☀️',
+                    afternoon: '🌤️',
+                    evening: '🌇',
+                    night: '🌙'
+                };
+                document.getElementById('verseTimeBadge').textContent = `${timeIcons[timePeriod]} ${this.capitalizeFirst(timePeriod)}`;
+            }
+
+            getCurrentTimePeriod() {
+                const hour = new Date().getHours();
+                if (hour >= 5 && hour < 12) return 'morning';
+                if (hour >= 12 && hour < 15) return 'day';
+                if (hour >= 15 && hour < 18) return 'afternoon';
+                if (hour >= 18 && hour < 22) return 'evening';
+                return 'night';
+            }
+
+            setManualMode(period) {
+                this.currentMode = 'manual';
+                this.userPreferences.displayMode = period;
+                this.savePreferences();
+                
+                // Update UI
+                document.querySelectorAll('.period').forEach(p => p.classList.remove('active'));
+                document.querySelector(`.period[data-period="${period}"]`).classList.add('active');
+                document.getElementById('modeText').textContent = 'Manual Mode';
+                document.getElementById('modeIndicator').classList.remove('auto');
+                document.getElementById('modeIndicator').classList.add('manual');
+                
+                this.displayRandomVerse();
+            }
+
+            handleDisplayModeChange(mode) {
+                if (mode === 'auto') {
+                    this.currentMode = 'auto';
+                    document.getElementById('modeText').textContent = 'Auto Mode';
+                    document.getElementById('modeIndicator').classList.remove('manual');
+                    document.getElementById('modeIndicator').classList.add('auto');
+                    
+                    // Reset period indicators to current time
+                    const currentPeriod = this.getCurrentTimePeriod();
+                    document.querySelectorAll('.period').forEach(p => p.classList.remove('active'));
+                    document.querySelector(`.period[data-period="${currentPeriod}"]`).classList.add('active');
+                } else {
+                    this.setManualMode(mode);
+                }
+            }
+
+            toggleFavorite() {
+                if (this.currentVerse) {
+                    this.incrementStat('versesFavorited');
+                    this.showNotification('Added to favorites!');
+                    // Update heart icon
+                    const heartIcon = document.querySelector('#favoriteVerse i');
+                    heartIcon.classList.remove('far');
+                    heartIcon.classList.add('fas');
+                    heartIcon.style.color = '#e74c3c';
+                }
+            }
+
+            // 🔔 ADVANCED REMINDER SYSTEM
+            switchReminderTab(tabName) {
+                document.querySelectorAll('.reminder-tab').forEach(tab => {
+                    tab.classList.toggle('active', tab.dataset.tab === tabName);
+                });
+                document.querySelectorAll('.reminder-tab-content').forEach(content => {
+                    content.classList.toggle('active', content.id === tabName + 'Tab');
+                });
+                
+                if (tabName === 'stats') {
+                    this.updateReminderStats();
+                }
+            }
+
+            updateReminderDisplay() {
+                const activeReminders = this.userPreferences.reminders.filter(r => r.status === 'active');
+                const completedReminders = this.userPreferences.reminders.filter(r => r.status === 'completed');
+                
+                // Update active reminders list
+                const activeList = document.getElementById('activeRemindersList');
+                activeList.innerHTML = activeReminders.length > 0 ? 
+                    activeReminders.map(reminder => `
+                        <div class="reminder-item">
+                            <div class="reminder-content">
+                                <div class="reminder-title">${reminder.title}</div>
+                                <div class="reminder-details">
+                                    <span>${this.formatTime(reminder.time)}</span>
+                                    <span>•</span>
+                                    <span>${reminder.repeat}</span>
+                                    <span>•</span>
+                                    <span>${this.formatDate(reminder.time)}</span>
                                 </div>
                             </div>
-                            <div class="contact-actions">
-                                <button class="reminder-action-btn" onclick="app.messageContact('${contact.id}')" title="Message">
-                                    <i class="fas fa-comment"></i>
+                            <div class="reminder-actions">
+                                <button class="reminder-action-btn complete" onclick="app.completeReminder('${reminder.id}')" title="Complete">
+                                    <i class="fas fa-check"></i>
                                 </button>
-                                <button class="reminder-action-btn delete" onclick="app.deleteContact('${contact.id}')" title="Delete">
+                                <button class="reminder-action-btn delete" onclick="app.deleteReminder('${reminder.id}')" title="Delete">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
                         </div>
                     `).join('') :
-                    '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">No contacts added. Add contacts to use WhatsApp broadcast features.</div>';
+                    '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">No active reminders</div>';
+                
+                // Update reminder history
+                const historyList = document.getElementById('reminderHistoryList');
+                historyList.innerHTML = completedReminders.length > 0 ?
+                    completedReminders.map(reminder => `
+                        <div class="reminder-item">
+                            <div class="reminder-content">
+                                <div class="reminder-title">${reminder.title}</div>
+                                <div class="reminder-details">
+                                    <span>Completed: ${this.formatDate(reminder.completedAt)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('') :
+                    '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">No reminder history</div>';
             }
 
-            messageContact(contactId) {
-                const contact = this.userPreferences.contacts.find(c => c.id === contactId);
-                if (contact && this.currentVerse) {
-                    const verseText = `"${this.currentVerse.text}" - ${this.currentVerse.reference}`;
-                    const message = `${verseText}\n\nShared via VerseCurator`;
-                    
-                    // Simulate sending message
-                    if (confirm(`Send verse to ${contact.name}?\n\n${message}`)) {
-                        this.showNotification(`Message sent to ${contact.name}`);
-                        this.addToShareHistory('sms');
-                    }
-                }
+            updateReminderStats() {
+                const total = this.userPreferences.reminders.length;
+                const active = this.userPreferences.reminders.filter(r => r.status === 'active').length;
+                const completed = this.userPreferences.reminders.filter(r => r.status === 'completed').length;
+                
+                document.getElementById('totalReminders').textContent = total;
+                document.getElementById('activeRemindersCount').textContent = active;
+                document.getElementById('completedRemindersCount').textContent = completed;
             }
 
-            // 🔔 ADVANCED REMINDER SYSTEM RESTORED
             showAdvancedReminderModal() {
                 const title = prompt('Reminder Title:', 'Read Bible Verse');
                 if (!title) return;
@@ -473,7 +2052,7 @@
                     if (reminder.status === 'active') {
                         const reminderTime = new Date(reminder.time);
                         
-                        if (reminderTime <= now) {
+                        if (reminderTime <= now && (!reminder.lastTriggered || new Date(reminder.lastTriggered) < reminderTime)) {
                             this.triggerReminder(reminder);
                             
                             // Handle repeating reminders
@@ -486,23 +2065,6 @@
             }
 
             triggerReminder(reminder) {
-                // Show actual notification
-                if (Notification.permission === 'granted') {
-                    new Notification('VerseCurator Reminder', {
-                        body: reminder.title,
-                        icon: '/icon.png'
-                    });
-                } else if (Notification.permission !== 'denied') {
-                    Notification.requestPermission().then(permission => {
-                        if (permission === 'granted') {
-                            new Notification('VerseCurator Reminder', {
-                                body: reminder.title,
-                                icon: '/icon.png'
-                            });
-                        }
-                    });
-                }
-                
                 // Show in-app notification
                 this.showNotification(`🔔 ${reminder.title}`);
                 
@@ -536,46 +2098,137 @@
                 this.savePreferences();
             }
 
-            // 🎄 OCCASION THEMES RESTORED
-            updateOccasionTheme() {
-                const now = new Date();
-                const month = now.getMonth();
-                const date = now.getDate();
-                
-                let occasion = 'general';
-                
-                // Christmas season
-                if ((month === 11 && date >= 15) || (month === 0 && date <= 6)) {
-                    occasion = 'christmas';
-                }
-                // Easter season (simplified)
-                else if (month === 3 && date >= 10 && date <= 20) {
-                    occasion = 'easter';
-                }
-                // Thanksgiving (US - November)
-                else if (month === 10 && date >= 20 && date <= 30) {
-                    occasion = 'thanksgiving';
-                }
-                
-                if (this.userPreferences.occasions.current !== occasion) {
-                    this.userPreferences.occasions.current = occasion;
+            completeReminder(id) {
+                const reminder = this.userPreferences.reminders.find(r => r.id === id);
+                if (reminder) {
+                    reminder.status = 'completed';
+                    reminder.completedAt = new Date().toISOString();
                     this.savePreferences();
-                    this.applyOccasionTheme(occasion);
+                    this.updateReminderDisplay();
+                    this.showNotification('Reminder completed!');
                 }
             }
 
-            applyOccasionTheme(occasion) {
-                // Remove all occasion classes
-                document.body.classList.remove('christmas-theme', 'easter-theme', 'thanksgiving-theme');
+            deleteReminder(id) {
+                if (confirm('Are you sure you want to delete this reminder?')) {
+                    this.userPreferences.reminders = this.userPreferences.reminders.filter(r => r.id !== id);
+                    this.savePreferences();
+                    this.updateReminderDisplay();
+                    this.showNotification('Reminder deleted!');
+                }
+            }
+
+            // 📱 CONTACT MANAGEMENT
+            switchBroadcastTab(tabName) {
+                document.querySelectorAll('.broadcast-tab').forEach(tab => {
+                    tab.classList.toggle('active', tab.dataset.tab === tabName);
+                });
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.toggle('active', content.id === tabName + 'Tab');
+                });
+            }
+
+            updateContactsDisplay() {
+                const contactsList = document.getElementById('contactsList');
+                const contacts = this.userPreferences.contacts || [];
                 
-                if (occasion !== 'general') {
-                    document.body.classList.add(`${occasion}-theme`);
+                contactsList.innerHTML = contacts.length > 0 ?
+                    contacts.map(contact => `
+                        <div class="contact-item">
+                            <div class="contact-info">
+                                <div class="contact-name">${contact.name}</div>
+                                <div class="contact-number">${contact.phone}</div>
+                                ${contact.groups && contact.groups.length > 0 ? `
+                                    <div class="contact-groups">
+                                        ${contact.groups.map(group => 
+                                            `<span class="contact-group-tag">${group}</span>`
+                                        ).join('')}
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div class="contact-actions">
+                                <button class="reminder-action-btn" onclick="app.messageContact('${contact.id}')" title="Message">
+                                    <i class="fas fa-comment"></i>
+                                </button>
+                                <button class="reminder-action-btn delete" onclick="app.deleteContact('${contact.id}')" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('') :
+                    '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">No contacts added. Add contacts to use WhatsApp broadcast features.</div>';
+            }
+
+            showAddContactModal() {
+                const name = prompt('Enter contact name:');
+                if (!name) return;
+                
+                const phone = prompt('Enter phone number:');
+                if (!phone) return;
+                
+                const groups = prompt('Enter groups (comma-separated, optional):', 'family,friends');
+                
+                this.userPreferences.contacts.push({
+                    id: Date.now().toString(),
+                    name,
+                    phone,
+                    groups: groups ? groups.split(',').map(g => g.trim()) : []
+                });
+                this.savePreferences();
+                this.updateContactsDisplay();
+                this.showNotification('Contact added successfully!');
+            }
+
+            importSampleContacts() {
+                this.userPreferences.contacts = [
+                    { id: '1', name: 'John Smith', phone: '+1234567890', groups: ['family'] },
+                    { id: '2', name: 'Sarah Johnson', phone: '+0987654321', groups: ['friends'] },
+                    { id: '3', name: 'Mike Davis', phone: '+1122334455', groups: ['church'] },
+                    { id: '4', name: 'Emily Wilson', phone: '+5566778899', groups: ['family', 'friends'] }
+                ];
+                this.savePreferences();
+                this.updateContactsDisplay();
+                this.showNotification('Sample contacts imported!');
+            }
+
+            messageContact(contactId) {
+                const contact = this.userPreferences.contacts.find(c => c.id === contactId);
+                if (contact && this.currentVerse) {
+                    const verseText = `"${this.currentVerse.text}" - ${this.currentVerse.reference}`;
+                    const message = `${verseText}\n\nShared via VerseCurator`;
+                    
+                    // Simulate sending message
+                    if (confirm(`Send verse to ${contact.name}?\n\n${message}`)) {
+                        this.showNotification(`Message sent to ${contact.name}`);
+                        this.addToShareHistory('sms');
+                    }
                 }
             }
 
-            // 📤 SHARE FUNCTIONALITY RESTORED
+            deleteContact(id) {
+                if (confirm('Are you sure you want to delete this contact?')) {
+                    this.userPreferences.contacts = this.userPreferences.contacts.filter(c => c.id !== id);
+                    this.savePreferences();
+                    this.updateContactsDisplay();
+                    this.showNotification('Contact deleted!');
+                }
+            }
+
+            copyVerseForBroadcast() {
+                if (!this.currentVerse) return;
+                
+                const verseText = `"${this.currentVerse.text}" - ${this.currentVerse.reference}`;
+                const broadcastText = `${verseText}\n\nShared via VerseCurator - Beautiful Bible verse curation`;
+                
+                navigator.clipboard.writeText(broadcastText).then(() => {
+                    this.showNotification('Copied! Ready for WhatsApp broadcast');
+                    this.addToShareHistory('whatsapp_broadcast');
+                });
+            }
+
+            // 📤 SHARE FUNCTIONALITY
             showShareModal() {
-                document.getElementById('shareModal').style.display = 'block';
+                document.getElementById('shareModal').style.display = 'flex';
             }
 
             hideShareModal() {
@@ -608,15 +2261,66 @@
                 this.incrementStat('versesShared');
                 this.addToShareHistory(platform);
                 this.hideShareModal();
+                
+                this.showNotification(`Shared via ${platform.charAt(0).toUpperCase() + platform.slice(1)}`);
             }
 
-            // ⭐ RATING SYSTEM RESTORED
+            // Share History Management
+            updateShareHistory() {
+                const historyList = document.getElementById('historyList');
+                const shareHistory = this.userPreferences.shareHistory || [];
+                
+                historyList.innerHTML = shareHistory.length > 0 ?
+                    shareHistory.slice(0, 10).map(item => `
+                        <div class="history-item">
+                            <div class="history-content">
+                                <div class="history-verse">"${this.truncateText(item.verse, 60)}"</div>
+                                <div class="history-details">
+                                    <div class="history-platform">
+                                        <i class="${this.getPlatformIcon(item.platform)}"></i>
+                                        ${this.getPlatformName(item.platform)}
+                                    </div>
+                                    <div>${this.formatTimeAgo(item.timestamp)}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('') :
+                    '<div class="empty-history">No share history yet</div>';
+            }
+
+            addToShareHistory(platform) {
+                if (!this.currentVerse) return;
+                
+                const historyItem = {
+                    id: Date.now(),
+                    verse: this.currentVerse.text,
+                    reference: this.currentVerse.reference,
+                    platform: platform,
+                    timestamp: new Date().toISOString()
+                };
+                
+                this.userPreferences.shareHistory = [historyItem, ...(this.userPreferences.shareHistory || [])].slice(0, 15);
+                this.savePreferences();
+                this.updateShareHistory();
+            }
+
+            clearShareHistory() {
+                if (confirm('Are you sure you want to clear your share history?')) {
+                    this.userPreferences.shareHistory = [];
+                    this.savePreferences();
+                    this.updateShareHistory();
+                    this.showNotification('Share history cleared!');
+                }
+            }
+
+            // ⭐ RATING SYSTEM
             showRatingModal() {
                 this.currentRating = 0;
                 document.querySelectorAll('.rating-star').forEach(star => {
                     star.classList.remove('active');
                 });
-                document.getElementById('ratingModal').style.display = 'block';
+                document.querySelector('.rating-comment').value = '';
+                document.getElementById('ratingModal').style.display = 'flex';
             }
 
             hideRatingModal() {
@@ -649,33 +2353,162 @@
                     setTimeout(() => {
                         document.getElementById('rateButton').style.display = 'block';
                     }, 86400000); // 24 hours
+                } else {
+                    this.showNotification('Please select a rating');
                 }
             }
 
-            // [KEEP ALL OTHER EXISTING METHODS...]
-            // updateTimeGreeting(), toggleTheme(), displayRandomVerse(), etc.
+            // UI Helpers
+            toggleSection(sectionId) {
+                const section = document.getElementById(sectionId);
+                const isVisible = section.style.display === 'block';
+                section.style.display = isVisible ? 'none' : 'block';
+                
+                // Update chevron icon
+                const btn = section.previousElementSibling;
+                const icon = btn.querySelector('.fa-chevron-down');
+                if (icon) {
+                    icon.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(180deg)';
+                }
+            }
 
+            // Preferences and Storage
+            loadPreferences() {
+                // Apply saved theme
+                this.applyTheme(this.userPreferences.theme);
+                
+                // Set control values
+                document.getElementById('translationSelect').value = this.userPreferences.translation;
+                document.getElementById('displayModeSelect').value = this.userPreferences.displayMode;
+                document.getElementById('occasionSelect').value = 'auto';
+                
+                // Set initial mode
+                if (this.userPreferences.displayMode === 'auto') {
+                    this.currentMode = 'auto';
+                    document.getElementById('modeText').textContent = 'Auto Mode';
+                } else {
+                    this.setManualMode(this.userPreferences.displayMode);
+                }
+
+                // Apply occasion theme
+                this.applyOccasionTheme(this.userPreferences.occasions.current);
+            }
+
+            savePreference(key, value) {
+                this.userPreferences[key] = value;
+                this.savePreferences();
+            }
+
+            savePreferences() {
+                localStorage.setItem('verseCuratorPreferences', JSON.stringify(this.userPreferences));
+            }
+
+            // Stats Management
+            updateStats() {
+                const stats = this.userPreferences.stats;
+                document.getElementById('versesViewed').textContent = stats.versesViewed || 0;
+                document.getElementById('versesShared').textContent = stats.versesShared || 0;
+                document.getElementById('versesFavorited').textContent = stats.versesFavorited || 0;
+                document.getElementById('currentStreak').textContent = stats.currentStreak || 0;
+            }
+
+            incrementStat(stat) {
+                if (!this.userPreferences.stats[stat]) {
+                    this.userPreferences.stats[stat] = 0;
+                }
+                this.userPreferences.stats[stat]++;
+                this.savePreferences();
+                this.updateStats();
+            }
+
+            updateStreak() {
+                const today = new Date().toDateString();
+                const lastVisit = this.userPreferences.stats.lastVisit;
+                
+                if (!lastVisit) {
+                    this.userPreferences.stats.currentStreak = 1;
+                } else {
+                    const lastVisitDate = new Date(lastVisit);
+                    const todayDate = new Date();
+                    const diffTime = todayDate - lastVisitDate;
+                    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    if (diffDays === 1) {
+                        this.userPreferences.stats.currentStreak++;
+                    } else if (diffDays > 1) {
+                        this.userPreferences.stats.currentStreak = 1;
+                    }
+                }
+                
+                this.userPreferences.stats.lastVisit = today;
+                this.savePreferences();
+                this.updateStats();
+            }
+
+            // Notification System
             showNotification(message) {
-                // Create a simple notification
                 const notification = document.createElement('div');
-                notification.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    background: var(--gradient);
-                    color: white;
-                    padding: 15px 20px;
-                    border-radius: 10px;
-                    z-index: 10000;
-                    box-shadow: var(--shadow-hover);
-                    font-weight: 600;
-                `;
+                notification.className = 'notification';
                 notification.textContent = message;
                 document.body.appendChild(notification);
                 
                 setTimeout(() => {
-                    document.body.removeChild(notification);
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
                 }, 3000);
+            }
+
+            // Utility methods
+            formatTime(dateString) {
+                return new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+
+            formatDate(dateString) {
+                return new Date(dateString).toLocaleDateString();
+            }
+
+            formatTimeAgo(timestamp) {
+                const now = new Date();
+                const time = new Date(timestamp);
+                const diffInSeconds = Math.floor((now - time) / 1000);
+                
+                if (diffInSeconds < 60) return 'Just now';
+                if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+                if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+                return `${Math.floor(diffInSeconds / 86400)}d ago`;
+            }
+
+            truncateText(text, maxLength) {
+                return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+            }
+
+            getPlatformIcon(platform) {
+                const icons = {
+                    'whatsapp': 'fab fa-whatsapp',
+                    'whatsapp_broadcast': 'fab fa-whatsapp',
+                    'sms': 'fas fa-sms',
+                    'email': 'fas fa-envelope',
+                    'copy': 'fas fa-copy',
+                    'share': 'fas fa-share-alt'
+                };
+                return icons[platform] || 'fas fa-share-alt';
+            }
+
+            getPlatformName(platform) {
+                const names = {
+                    'whatsapp': 'WhatsApp',
+                    'whatsapp_broadcast': 'WhatsApp Broadcast',
+                    'sms': 'SMS',
+                    'email': 'Email',
+                    'copy': 'Copied',
+                    'share': 'Shared'
+                };
+                return names[platform] || platform;
+            }
+
+            capitalizeFirst(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
             }
         }
 
